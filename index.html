@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake Shopping Website Detector</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b2a5b;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 600px;
+            margin: 70px auto;
+            background: #12366f;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        h1 {
+            color: white;
+        }
+
+        p {
+            color: white;
+        }
+
+        input {
+            width: 90%;
+            padding: 14px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 13px 30px;
+            background: #1f4fa3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2d65c4;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .high {
+            background: #ffe5e5;
+            color: #b00020;
+        }
+
+        .medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .low {
+            background: #e4f7e8;
+            color: #176b2c;
+        }
+
+        .result h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            text-align: left;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🛡️ Fake Shopping Website Detector</h1>
+
+        <p>Check whether a shopping website looks suspicious.</p>
+
+        <form method="POST">
+            <input type="text" name="url" placeholder="Enter website URL" required>
+
+            <br>
+
+            <button type="submit">CHECK WEBSITE</button>
+        </form>
+
+        {% if result %}
+        <div class="result {{ risk_class }}">
+
+            <h2>{{ result }}</h2>
+
+            <p>
+                Risk Score: <strong>{{ score }}</strong>
+            </p>
+
+            <p>
+                Risk Percentage:
+                <strong>{{ risk_percentage }}%</strong>
+            </p>
+
+            <h3>Reasons:</h3>
+
+            <ul>
+                {% for reason in reasons %}
+                <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
