@@ -104,7 +104,11 @@
 
     <p>Check whether a shopping website looks suspicious.</p>
 
-    <input type="text" id="urlInput" placeholder="Enter website URL">
+    <input
+        type="text"
+        id="urlInput"
+        placeholder="Enter website URL"
+    >
 
     <br>
 
@@ -138,143 +142,298 @@ function checkWebsite() {
 
         let website = new URL(url);
 
-        // 1. Check HTTPS
+        // ==========================================
+        // 1. CHECK HTTPS
+        // ==========================================
+
         if (website.protocol !== "https:") {
+
             score += 20;
-            reasons.push("Website is not using HTTPS.");
-        }
 
-        // 2. Check suspicious keywords
-       let suspiciousWords = [
-    "login",
-    "signin",
-    "verify",
-    "verification",
-    "security",
-    "account",
-    "update",
-    "confirm",
-    "paypal",
-    "bank",
-    "payment",
-    "password",
-    "free",
-    "winner",
-    "claim",
-    "offer",
-    "discount",
-    "cheap",
-    "deal",
-    "prize"
-];
-
-        let lowerURL = url.toLowerCase();
-        let foundWords = [];
-
-        suspiciousWords.forEach(function(word) {
-            if (lowerURL.includes(word)) {
-                foundWords.push(word);
-            }
-        });
-
-        if (foundWords.length > 0) {
-            score += 15;
             reasons.push(
-                "Suspicious keyword found: " + foundWords.join(", ")
+                "Website is not using HTTPS."
             );
         }
 
-        // 3. Check very long URL
-        if (url.length > 100) {
-            score += 15;
-            reasons.push("The URL is unusually long.");
+
+        // ==========================================
+        // 2. CHECK SUSPICIOUS KEYWORDS
+        // ==========================================
+
+        let suspiciousWords = {
+
+            "login": 10,
+            "signin": 10,
+            "verify": 15,
+            "verification": 15,
+            "security": 10,
+            "account": 10,
+            "update": 10,
+            "confirm": 10,
+            "paypal": 15,
+            "bank": 20,
+            "payment": 20,
+            "password": 25,
+            "free": 10,
+            "winner": 15,
+            "claim": 15,
+            "offer": 10,
+            "discount": 10,
+            "cheap": 10,
+            "deal": 10,
+            "prize": 15
+
+        };
+
+        let lowerURL = url.toLowerCase();
+
+        let foundWords = [];
+
+        Object.keys(suspiciousWords).forEach(function(word) {
+
+            if (lowerURL.includes(word)) {
+
+                score += suspiciousWords[word];
+
+                foundWords.push(word);
+            }
+
+        });
+
+
+        if (foundWords.length > 0) {
+
+            reasons.push(
+                "Suspicious keywords found: " +
+                foundWords.join(", ")
+            );
+
         }
 
-        // 4. Check too many hyphens
-        let hyphens = (website.hostname.match(/-/g) || []).length;
+
+        // ==========================================
+        // 3. CHECK VERY LONG URL
+        // ==========================================
+
+        if (url.length > 100) {
+
+            score += 15;
+
+            reasons.push(
+                "The URL is unusually long."
+            );
+
+        }
+
+
+        // ==========================================
+        // 4. CHECK TOO MANY HYPHENS
+        // ==========================================
+
+        let hyphens =
+            (website.hostname.match(/-/g) || []).length;
 
         if (hyphens >= 3) {
+
             score += 15;
-            reasons.push("The domain contains many hyphens.");
+
+            reasons.push(
+                "The domain contains many hyphens."
+            );
+
         }
 
-        // 5. Check suspicious @ symbol
-        if (website.hostname.includes("@")) {
+
+        // ==========================================
+        // 5. CHECK SUSPICIOUS @ SYMBOL
+        // ==========================================
+
+        if (url.includes("@")) {
+
             score += 20;
-            reasons.push("The URL contains a suspicious @ symbol.");
+
+            reasons.push(
+                "The URL contains a suspicious @ symbol."
+            );
+
         }
 
-        // 6. Check IP address
-        let ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+
+        // ==========================================
+        // 6. CHECK IP ADDRESS
+        // ==========================================
+
+        let ipPattern =
+            /^(\d{1,3}\.){3}\d{1,3}$/;
 
         if (ipPattern.test(website.hostname)) {
+
             score += 25;
+
             reasons.push(
                 "The website uses an IP address instead of a normal domain name."
             );
+
         }
 
-        // Maximum score
+
+        // ==========================================
+        // 7. CHECK SUSPICIOUS DOMAIN EXTENSIONS
+        // ==========================================
+
+        let suspiciousExtensions = [
+            ".tk",
+            ".ml",
+            ".ga",
+            ".cf",
+            ".gq"
+        ];
+
+        let hostname =
+            website.hostname.toLowerCase();
+
+        suspiciousExtensions.forEach(function(extension) {
+
+            if (hostname.endsWith(extension)) {
+
+                score += 15;
+
+                reasons.push(
+                    "The domain uses a commonly suspicious free domain extension: " +
+                    extension
+                );
+
+            }
+
+        });
+
+
+        // ==========================================
+        // MAXIMUM SCORE
+        // ==========================================
+
         if (score > 100) {
             score = 100;
         }
 
+
+        // ==========================================
+        // RISK LEVEL
+        // ==========================================
+
         let result = "";
         let riskClass = "";
 
-        // Risk level
+
         if (score >= 60) {
 
             result = "🔴 HIGH RISK";
+
             riskClass = "high";
 
-        } else if (score >= 30) {
-
-            result = "🟡 MEDIUM RISK";
-            riskClass = "medium";
-
-        } else {
-
-            result = "🟢 LOW RISK";
-            riskClass = "low";
         }
 
-        // Additional messages according to risk level
+        else if (score >= 30) {
+
+            result = "🟡 MEDIUM RISK";
+
+            riskClass = "medium";
+
+        }
+
+        else {
+
+            result = "🟢 LOW RISK";
+
+            riskClass = "low";
+
+        }
+
+
+        // ==========================================
+        // ADDITIONAL MESSAGES
+        // ==========================================
+
         if (riskClass === "low") {
 
-            reasons.push("No major suspicious indicators were detected.");
-            reasons.push("The website has a low risk score.");
-            reasons.push("No common suspicious URL patterns were found.");
-            reasons.push("The website appears relatively safe.");
+            reasons.push(
+                "No major suspicious indicators were detected."
+            );
 
-        } else if (riskClass === "medium") {
+            reasons.push(
+                "The website has a low risk score."
+            );
 
-            reasons.push("Some suspicious indicators were detected.");
+            reasons.push(
+                "No common suspicious URL patterns were found."
+            );
+
+            reasons.push(
+                "The website appears relatively safe."
+            );
+
+        }
+
+
+        else if (riskClass === "medium") {
+
+            reasons.push(
+                "Some suspicious indicators were detected."
+            );
+
             reasons.push(
                 "Please verify the website before entering personal information."
             );
-            reasons.push("Be careful before making any payment.");
+
+            reasons.push(
+                "Be careful before making any payment."
+            );
+
             reasons.push(
                 "Check the website details carefully before proceeding."
             );
 
-        } else if (riskClass === "high") {
+        }
 
-            reasons.push("Multiple suspicious indicators were detected.");
-            reasons.push("This website may be unsafe or fraudulent.");
+
+        else if (riskClass === "high") {
+
+            reasons.push(
+                "Multiple suspicious indicators were detected."
+            );
+
+            reasons.push(
+                "This website may be unsafe or fraudulent."
+            );
+
             reasons.push(
                 "Do not enter personal or banking information."
             );
+
             reasons.push(
                 "Avoid making payments on this website."
             );
+
         }
+
+
+        // ==========================================
+        // CREATE REASON LIST
+        // ==========================================
 
         let reasonList = "";
 
         reasons.forEach(function(reason) {
-            reasonList += "<li>" + reason + "</li>";
+
+            reasonList +=
+                "<li>" + reason + "</li>";
+
         });
+
+
+        // ==========================================
+        // DISPLAY RESULT
+        // ==========================================
 
         document.getElementById("result").innerHTML = `
 
@@ -299,9 +458,13 @@ function checkWebsite() {
                 </ul>
 
             </div>
+
         `;
 
-    } catch (error) {
+    }
+
+
+    catch (error) {
 
         document.getElementById("result").innerHTML = `
 
@@ -309,12 +472,16 @@ function checkWebsite() {
 
                 <h2>🔴 INVALID URL</h2>
 
-                <p>Please enter a valid website URL.</p>
+                <p>
+                    Please enter a valid website URL.
+                </p>
 
             </div>
 
         `;
+
     }
+
 }
 
 </script>
