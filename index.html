@@ -145,16 +145,28 @@ function checkWebsite() {
         }
 
         // 2. Check suspicious keywords
-        let suspiciousWords = [
-            "free",
-            "winner",
-            "claim",
-            "offer",
-            "discount",
-            "cheap",
-            "deal",
-            "prize"
-        ];
+       let suspiciousWords = [
+    "login",
+    "signin",
+    "verify",
+    "verification",
+    "security",
+    "account",
+    "update",
+    "confirm",
+    "paypal",
+    "bank",
+    "payment",
+    "password",
+    "free",
+    "winner",
+    "claim",
+    "offer",
+    "discount",
+    "cheap",
+    "deal",
+    "prize"
+];
 
         let lowerURL = url.toLowerCase();
         let foundWords = [];
