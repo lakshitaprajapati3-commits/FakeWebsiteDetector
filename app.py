@@ -76,7 +76,10 @@ def check_website(url):
     # Maximum score used for percentage
     max_score = 16
 
-    risk_percentage = min(round((score / max_score) * 100), 100)
+    risk_percentage = min(
+        round((score / max_score) * 100),
+        100
+    )
 
     # Final result
     if score >= 7:
@@ -91,10 +94,30 @@ def check_website(url):
         result = "LOW RISK - Looks Relatively Safe"
         level = "low"
 
-    if not reasons:
+    # Additional messages according to risk level
+    if level == "low":
+        reasons.append("No major suspicious indicators were detected")
+        reasons.append("The website has a low risk score")
+        reasons.append("No common suspicious URL patterns were found")
+        reasons.append("The website appears relatively safe")
+
+    elif level == "medium":
+        reasons.append("Some suspicious indicators were detected")
         reasons.append(
-            "No obvious suspicious URL features were detected"
+            "Please verify the website before entering personal information"
         )
+        reasons.append("Be careful before making any payment")
+        reasons.append(
+            "Check the website details carefully before proceeding"
+        )
+
+    elif level == "high":
+        reasons.append("Multiple suspicious indicators were detected")
+        reasons.append("This website may be unsafe or fraudulent")
+        reasons.append(
+            "Do not enter personal or banking information"
+        )
+        reasons.append("Avoid making payments on this website")
 
     return result, level, score, risk_percentage, reasons
 
