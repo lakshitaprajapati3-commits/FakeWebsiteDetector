@@ -26,7 +26,8 @@
             color: white;
         }
 
-        p {
+        /* Only the main description remains white */
+        .container > p {
             color: white;
         }
 
@@ -58,6 +59,17 @@
             margin-top: 30px;
             padding: 20px;
             border-radius: 10px;
+        }
+
+        /* FIX FOR RISK SCORE AND RISK PERCENTAGE */
+        .result p {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .result strong {
+            color: #111;
+            font-weight: bold;
         }
 
         .high {
@@ -188,7 +200,9 @@ function checkWebsite() {
 
         if (ipPattern.test(website.hostname)) {
             score += 25;
-            reasons.push("The website uses an IP address instead of a normal domain name.");
+            reasons.push(
+                "The website uses an IP address instead of a normal domain name."
+            );
         }
 
         // Maximum score
@@ -213,7 +227,6 @@ function checkWebsite() {
 
             result = "🟢 LOW RISK";
             riskClass = "low";
-
         }
 
         if (reasons.length === 0) {
