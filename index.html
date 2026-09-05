@@ -26,7 +26,6 @@
             color: white;
         }
 
-        /* Only the main description remains white */
         .container > p {
             color: white;
         }
@@ -61,7 +60,6 @@
             border-radius: 10px;
         }
 
-        /* FIX FOR RISK SCORE AND RISK PERCENTAGE */
         .result p {
             color: #333;
             font-size: 18px;
@@ -159,7 +157,6 @@ function checkWebsite() {
         ];
 
         let lowerURL = url.toLowerCase();
-
         let foundWords = [];
 
         suspiciousWords.forEach(function(word) {
@@ -189,13 +186,13 @@ function checkWebsite() {
             reasons.push("The domain contains many hyphens.");
         }
 
-        // 5. Check suspicious characters
+        // 5. Check suspicious @ symbol
         if (website.hostname.includes("@")) {
             score += 20;
             reasons.push("The URL contains a suspicious @ symbol.");
         }
 
-        // 6. Check IP address instead of domain
+        // 6. Check IP address
         let ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
 
         if (ipPattern.test(website.hostname)) {
@@ -213,6 +210,7 @@ function checkWebsite() {
         let result = "";
         let riskClass = "";
 
+        // Risk level
         if (score >= 60) {
 
             result = "🔴 HIGH RISK";
@@ -229,8 +227,35 @@ function checkWebsite() {
             riskClass = "low";
         }
 
-        if (reasons.length === 0) {
+        // Additional messages according to risk level
+        if (riskClass === "low") {
+
             reasons.push("No major suspicious indicators were detected.");
+            reasons.push("The website has a low risk score.");
+            reasons.push("No common suspicious URL patterns were found.");
+            reasons.push("The website appears relatively safe.");
+
+        } else if (riskClass === "medium") {
+
+            reasons.push("Some suspicious indicators were detected.");
+            reasons.push(
+                "Please verify the website before entering personal information."
+            );
+            reasons.push("Be careful before making any payment.");
+            reasons.push(
+                "Check the website details carefully before proceeding."
+            );
+
+        } else if (riskClass === "high") {
+
+            reasons.push("Multiple suspicious indicators were detected.");
+            reasons.push("This website may be unsafe or fraudulent.");
+            reasons.push(
+                "Do not enter personal or banking information."
+            );
+            reasons.push(
+                "Avoid making payments on this website."
+            );
         }
 
         let reasonList = "";
